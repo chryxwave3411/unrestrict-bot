@@ -1,25 +1,12 @@
-import asyncio
+import os
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-from src.forward import forward_media
-from src.grabber import client
-from src.health import HEALTHCHECK
-from src.sender import dispatcher
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Hello! Bot is running.")
 
-async def main():
-    async with client:
-        # print((await client.get_entity("me")))
-        # await forward_media()
-        print("Bot started")
-        HEALTHCHECK.healthy()
-        await dispatcher.start_polling()
-        # print(StringSession.save(client.session))
-        # return
-
-
-if __name__ == "__main__":
-    # asyncio.run(main())
-    loop = asyncio.get_event_loop()
-    task = loop.create_task(main())
-    loop.run_until_complete(asyncio.gather(task))
-    loop.run_forever()
+app = ApplicationBuilder().token(BOT_TOKEN).build()
+app.add_handler(CommandHandler("start", start))
+app.run_polling()w
